@@ -118,26 +118,22 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 func createLoanRequest(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
 	fmt.Println("Incorrect arguments. Expecting a key and a value", args)
-	if len(args) != 2 {
+	if len(args) != 5 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
 	}
 	
-		var loanApplicationId = args[0]
-        var loanApplicationInput = args[1]  
-       
+	loanApplication := &loanApplication{args[0], args[1], args[2], args[3], args[4]}
+
+	loanApplicationJSONasBytes, err := json.Marshal(loanApplication)
+	if err != nil {
+		return "", fmt.Errorf("Failed to Marshal asset: %s", args[0])
+	}
 	
-
-	// ==== Create marble object and marshal to JSON ====
-
-	//loanApplicationObj := &loanApplication{id, dealerId, status, requestedAmount, bankId}
-	//loanApplicationJSONasBytes, err := json.Marshal(loanApplicationObj)
-
-	 err := stub.PutState(loanApplicationId, []byte(loanApplicationInput))
-
+	err = stub.PutState(args[0], []byte(loanApplicationJSONasBytes))
 	if err != nil {
 		return "", fmt.Errorf("Failed to set asset: %s", args[0])
 	}
-	return loanApplicationInput, nil
+	return args[0], nil
 }
 
 // Get returns the value of the specified asset key
