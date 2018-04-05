@@ -26,11 +26,11 @@ type user struct {
 }
 
 type loanApplication struct {
-	id              string `json:"id"`
-	dealerId        string `json:"dealerId"`
-	status          string `json:"status"`
-	requestedAmount string `json:"requestedAmount"`
-	bankId          string `json:"bankId"`
+	LoanID          string `json:"LoanID"`
+	DealerId        string `json:"DealerId"`
+	BankId          string `json:"BankId"`
+	Status          string `json:"Status"`
+	RequestedAmount string `json:"RequestedAmount"`
 }
 
 // Init is called during chaincode instantiation to initialize any
@@ -117,23 +117,21 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 // it will override the value with the new one
 func createLoanRequest(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
-	fmt.Println("Incorrect arguments. Expecting a key and a value", args)
 	if len(args) != 5 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
 	}
-	
-	loanApplication := &loanApplication{args[0], args[1], args[2], args[3], args[4]}
 
-	loanApplicationJSONasBytes, err := json.Marshal(loanApplication)
+	loanApplication := &loanApplication{args[0], args[1], args[2], args[3], args[4]}
+	LoanJSONasBytes, err := json.Marshal(loanApplication)
 	if err != nil {
 		return "", fmt.Errorf("Failed to Marshal asset: %s", args[0])
 	}
-	
-	err = stub.PutState(args[0], []byte(loanApplicationJSONasBytes))
+
+	err = stub.PutState(args[0], []byte(LoanJSONasBytes))
 	if err != nil {
 		return "", fmt.Errorf("Failed to set asset: %s", args[0])
 	}
-	return args[0], nil
+	return args[1], nil
 }
 
 // Get returns the value of the specified asset key
@@ -166,7 +164,7 @@ func updateLoanStatus(stub shim.ChaincodeStubInterface, args []string) (string, 
 	loanApplication := loanApplication{}
 
 	json.Unmarshal(loanAsBytes, &loanApplication)
-	loanApplication.status = loanApplicationStatus
+	loanApplication.Status = loanApplicationStatus
 
 	loanAsBytes, _ = json.Marshal(loanApplication)
 	stub.PutState(loanApplicationId, loanAsBytes)
