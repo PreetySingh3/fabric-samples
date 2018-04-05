@@ -26,7 +26,6 @@ type user struct {
 }
 
 type loanApplication struct {
-	ObjectType string `json:"docType"` 
 	id              string `json:"id"`
 	dealerId        string `json:"dealerId"`
 	status          string `json:"status"`
@@ -119,37 +118,26 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 func createLoanRequest(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
 	fmt.Println("Incorrect arguments. Expecting a key and a value", args)
-	if len(args) != 5 {
+	if len(args) != 4 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
 	}
 	
 		var loanApplicationId = args[0]
-        var loanApplicationAmount = args[1]
-        var loanApplicationdealerId = args[2]
-		var loanApplicationbankId = args[3]
-		var loanApplicationStatus = args[4]
+        var loanApplicationInput = args[1]  
        
-	   fmt.Println(loanApplicationId + ".........." + loanApplicationAmount + ".........." + loanApplicationdealerId + ".........." + loanApplicationbankId  + ".........." + loanApplicationStatus)
-
-    id := args[0]
-	dealerId := args[1]
-	status := args[2]
-	requestedAmount := args[3]
-	bankId := args[4]
+	
 
 	// ==== Create marble object and marshal to JSON ====
-	objectType := "loanApplication"
-	loanApplicationObj := &loanApplication{objectType, id, dealerId, status, requestedAmount, bankId}
-	loanApplicationJSONasBytes, err := json.Marshal(loanApplicationObj)
-	err = stub.PutState(loanApplicationId, []byte(loanApplicationJSONasBytes))
+
+	//loanApplicationObj := &loanApplication{id, dealerId, status, requestedAmount, bankId}
+	//loanApplicationJSONasBytes, err := json.Marshal(loanApplicationObj)
+
+	 err := stub.PutState(loanApplicationId, []byte(loanApplicationInput))
+
 	if err != nil {
 		return "", fmt.Errorf("Failed to set asset: %s", args[0])
 	}
-	
-	
-	
-	
-	return loanApplicationId, nil
+	return loanApplicationInput, nil
 }
 
 // Get returns the value of the specified asset key
