@@ -118,7 +118,7 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 func createLoanRequest(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
 	fmt.Println("Incorrect arguments. Expecting a key and a value", args)
-	if len(args) != 4 {
+	if len(args) != 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
 	}
 	
