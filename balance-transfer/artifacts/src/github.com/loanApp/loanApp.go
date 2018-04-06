@@ -26,11 +26,16 @@ type user struct {
 }
 
 type loanApplication struct {
-	LoanID          string `json:"LoanID"`
-	DealerId        string `json:"DealerId"`
-	BankId          string `json:"BankId"`
-	Status          string `json:"Status"`
-	RequestedAmount string `json:"RequestedAmount"`
+	userid          string `json:"userid"`
+	name        	string `json:"name"`
+	ssn          	string `json:"ssn"`
+	loanamount      string `json:"loanamount"`
+	education 		string `json:"education"`
+	age 			string `json:"age"`
+	tenure 			string `json:"tenure"`
+	address 		string `json:"address"`
+	bankid 			string `json:"bankid"`	
+	status 			string `json:"status"`
 }
 
 // Init is called during chaincode instantiation to initialize any
@@ -117,11 +122,11 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 // it will override the value with the new one
 func createLoanRequest(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
-	if len(args) != 5 {
+	if len(args) != 10 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
 	}
 
-	loanApplication := &loanApplication{args[0], args[1], args[2], args[3], args[4]}
+	loanApplication := &loanApplication{args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9]}
 	LoanJSONasBytes, err := json.Marshal(loanApplication)
 	if err != nil {
 		return "", fmt.Errorf("Failed to Marshal asset: %s", args[0])
@@ -164,7 +169,7 @@ func updateLoanStatus(stub shim.ChaincodeStubInterface, args []string) (string, 
 	loanApplication := loanApplication{}
 
 	json.Unmarshal(loanAsBytes, &loanApplication)
-	loanApplication.Status = loanApplicationStatus
+	loanApplication.status = loanApplicationStatus
 
 	loanAsBytes, _ = json.Marshal(loanApplication)
 	stub.PutState(loanApplicationId, loanAsBytes)
