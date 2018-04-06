@@ -125,6 +125,15 @@ func createLoanRequest(stub shim.ChaincodeStubInterface, args []string) (string,
 	if len(args) != 10 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
 	}
+	
+	i1, err := strconv.Atoi(args[5])
+    if err == nil {
+        fmt.Println(i1)
+    }
+	
+	if i1 < 18 || i1 > 60 {
+		return "", fmt.Errorf("Applicant not eligible for loan due to age restrictions.")
+	}
 
 	loanApplication := &loanApplication{args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9]}
 	LoanJSONasBytes, err := json.Marshal(loanApplication)
