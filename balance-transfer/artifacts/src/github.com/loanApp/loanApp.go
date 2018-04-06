@@ -26,16 +26,16 @@ type user struct {
 }
 
 type loanApplication struct {
-	userid          string `json:"userid"`
-	name        	string `json:"name"`
-	ssn          	string `json:"ssn"`
-	loanamount      string `json:"loanamount"`
-	education 		string `json:"education"`
-	age 			string `json:"age"`
-	tenure 			string `json:"tenure"`
-	address 		string `json:"address"`
-	bankid 			string `json:"bankid"`	
-	status 			string `json:"status"`
+	user_id          string `json:"user_id"`
+	name        string `json:"name"`
+	ssn string `json:"ssn"`
+	loanamount string `json:"loanamount"`
+	education string `json:"education"`
+	age string `json:"age"`	
+	tenure string `json:"tenure"`
+	address string `json:"address"`
+	bankid string `json:"bankid"`
+	status string `json:"status"`
 }
 
 // Init is called during chaincode instantiation to initialize any
