@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-
+	"github.com/jasonlvhit/gocron"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
 )
@@ -118,6 +118,11 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	return shim.Success([]byte(result))
 }
 
+func task() {
+	fmt.Println("..........................................I am runnning task.")
+}
+
+
 // Set stores the asset (both key and value) on the ledger. If the key exists,
 // it will override the value with the new one
 func createLoanRequest(stub shim.ChaincodeStubInterface, args []string) (string, error) {
@@ -194,9 +199,9 @@ func (t *SimpleAsset) queryLoanByBank(stub shim.ChaincodeStubInterface, args []s
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 
-	bankId := args[0]
+	BankId := args[0]
 
-	queryString := fmt.Sprintf("{\"selector\":{\"docType\":\"loanApplication\",\"bankId\":\"%s\"}}", bankId)
+	queryString := fmt.Sprintf("{\"selector\": {\"BankId\": {\"$eq\": \"%s\" }}}", BankId)
 
 	queryResults, err := getQueryResultForQueryString(stub, queryString)
 	if err != nil {
@@ -253,6 +258,7 @@ func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString 
 
 // main function starts up the chaincode in the container during instantiate
 func main() {
+	gocron.Every(1).Second().Do(task)
 	if err := shim.Start(new(SimpleAsset)); err != nil {
 		fmt.Printf("Error starting SimpleAsset chaincode: %s", err)
 	}
