@@ -26,16 +26,16 @@ type user struct {
 }
 
 type loanApplication struct {
-	UserId          string `json:"UserId"`
-	Name        string `json:"Name"`
-	SSN          string `json:"SSN"`
-	LoanAmount          string `json:"LoanAmount"`
-	Education string `json:"Education"`
-	Age string `json:"Age"`
-	Tenure string `json:"Tenure"`
-	Address string `json:"Address"`
-	BankId string `json:"BankId"`
-	Status string `json:"Status"`
+	UserId     string `json:"UserId"`
+	Name       string `json:"Name"`
+	SSN        string `json:"SSN"`
+	LoanAmount string `json:"LoanAmount"`
+	Education  string `json:"Education"`
+	Age        string `json:"Age"`
+	Tenure     string `json:"Tenure"`
+	Address    string `json:"Address"`
+	BankId     string `json:"BankId"`
+	Status     string `json:"Status"`
 }
 
 // Init is called during chaincode instantiation to initialize any
@@ -125,14 +125,22 @@ func createLoanRequest(stub shim.ChaincodeStubInterface, args []string) (string,
 	if len(args) != 10 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
 	}
-	
+
 	i1, err := strconv.Atoi(args[5])
-    if err == nil {
-        fmt.Println(i1)
-    }
-	
+	if err == nil {
+		fmt.Println(i1)
+	}
+
 	if i1 < 18 || i1 > 60 {
 		return "", fmt.Errorf("Applicant not eligible for loan due to age restrictions.")
+	}
+	i2, err := strconv.Atoi(args[3])
+	if err == nil {
+		fmt.Println(i2)
+	}
+
+	if args[8] == "bank123" || i2 > 500000 {
+		return "", fmt.Errorf("Not eligible to apply for loan.")
 	}
 
 	loanApplication := &loanApplication{args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9]}
@@ -163,7 +171,6 @@ func getLoanOfUser(stub shim.ChaincodeStubInterface, args []string) (string, err
 	}
 	return string(value), nil
 }
-
 
 // Set stores the asset (both key and value) on the ledger. If the key exists,
 // it will override the value with the new one
