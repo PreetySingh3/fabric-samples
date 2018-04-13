@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"/opt/gopath/src/github.com/gocron"
+
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
 )
@@ -117,11 +117,6 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	// Return the result as success payload
 	return shim.Success([]byte(result))
 }
-
-func task() {
-	fmt.Println("..........................................I am runnning task.")
-}
-
 
 // Set stores the asset (both key and value) on the ledger. If the key exists,
 // it will override the value with the new one
@@ -258,7 +253,6 @@ func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString 
 
 // main function starts up the chaincode in the container during instantiate
 func main() {
-	gocron.Every(1).Second().Do(task)
 	if err := shim.Start(new(SimpleAsset)); err != nil {
 		fmt.Printf("Error starting SimpleAsset chaincode: %s", err)
 	}
