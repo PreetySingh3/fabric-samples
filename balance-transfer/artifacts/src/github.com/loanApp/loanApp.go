@@ -26,16 +26,17 @@ type user struct {
 }
 
 type loanApplication struct {
-	UserId     string `json:"UserId"`
-	Name       string `json:"Name"`
-	SSN        string `json:"SSN"`
-	LoanAmount string `json:"LoanAmount"`
-	Education  string `json:"Education"`
-	Age        string `json:"Age"`
-	Tenure     string `json:"Tenure"`
-	Address    string `json:"Address"`
-	BankId     string `json:"BankId"`
-	Status     string `json:"Status"`
+	UserId      string `json:"UserId"`
+	Name        string `json:"Name"`
+	SSN         string `json:"SSN"`
+	LoanAmount  string `json:"LoanAmount"`
+	Education   string `json:"Education"`
+	Age         string `json:"Age"`
+	Tenure      string `json:"Tenure"`
+	Address     string `json:"Address"`
+	BankId      string `json:"BankId"`
+	Status      string `json:"Status"`
+	CreditScore string `json:"CreditScore"`
 }
 
 // Init is called during chaincode instantiation to initialize any
@@ -107,6 +108,8 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 		result, err = getLoanOfUser(stub, args)
 	} else if fn == "queryLoanByBank" {
 		return t.queryLoanByBank(stub, args)
+	} else if fn == "setCreditScoreState" { // assume 'set' even if fn is nil
+		result, err = setCreditScoreState(stub, args)
 	} else {
 		result, err = updateLoanStatus(stub, args)
 	}
@@ -118,11 +121,36 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	return shim.Success([]byte(result))
 }
 
+// Set credit score of bank
+func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+	var loanApplicationId, creditScore string
+
+	fmt.Println("running write()")
+
+	if len(args) != 2 {
+		return "", fmt.Errorf("Incorrect number of arguments. Expecting 2. name of the key and value to set")
+	}
+
+	loanApplicationId = args[0]
+	creditScore = args[1]
+
+	loanAsBytes, _ := stub.GetState(loanApplicationId)
+	loanApplication := loanApplication{}
+
+	json.Unmarshal(loanAsBytes, &loanApplication)
+	loanApplication.CreditScore = creditScore
+
+	loanAsBytes, _ = json.Marshal(loanApplication)
+	stub.PutState(loanApplicationId, loanAsBytes)
+
+	return creditScore, nil
+}
+
 // Set stores the asset (both key and value) on the ledger. If the key exists,
 // it will override the value with the new one
 func createLoanRequest(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
-	if len(args) != 10 {
+	if len(args) != 11 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
 	}
 
@@ -134,16 +162,8 @@ func createLoanRequest(stub shim.ChaincodeStubInterface, args []string) (string,
 	if i1 < 18 || i1 > 60 {
 		return "", fmt.Errorf("Applicant not eligible for loan due to age restrictions.")
 	}
-	i2, err := strconv.Atoi(args[3])
-	if err == nil {
-		fmt.Println(i2)
-	}
 
-	if args[8] == "bank123" || i2 > 500000 {
-		return "", fmt.Errorf("Not eligible to apply for loan.")
-	}
-
-	loanApplication := &loanApplication{args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9]}
+	loanApplication := &loanApplication{args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10]}
 	LoanJSONasBytes, err := json.Marshal(loanApplication)
 	if err != nil {
 		return "", fmt.Errorf("Failed to Marshal asset: %s", args[0])
