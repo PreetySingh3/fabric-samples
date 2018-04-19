@@ -125,10 +125,7 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 // Set credit score of bank
 func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	//var loanApplicationId, creditScore string
-
-	if len(args) != 2 {
-		return "", fmt.Errorf("Incorrect number of arguments. Expecting 2. name of the key and value to set")
-	}
+	fmt.Println("testing.......................................", args)
 
 	for i := 0; i < len(args); i++ {
 		fmt.Println("args[i] inside loop..............", args[i])
