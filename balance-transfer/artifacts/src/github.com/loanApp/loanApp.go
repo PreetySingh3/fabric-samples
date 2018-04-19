@@ -99,7 +99,8 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	// Extract the function and args from the transaction proposal
 	fn, args := stub.GetFunctionAndParameters()
-
+	fmt.Println("Args..............................", args)
+	fmt.Println("fn..............................", fn)
 	var result string
 	var err error
 	if fn == "createLoanRequest" {
@@ -123,7 +124,7 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 
 // Set credit score of bank
 func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (string, error) {
-	var loanApplicationId, creditScore string
+	//var loanApplicationId, creditScore string
 
 	fmt.Println("running write()")
 
@@ -131,19 +132,26 @@ func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (strin
 		return "", fmt.Errorf("Incorrect number of arguments. Expecting 2. name of the key and value to set")
 	}
 
-	loanApplicationId = args[0]
-	creditScore = args[1]
+	for i := 0; i < len(args); i++ {
+		fmt.Println(args[i])
+	}
 
-	loanAsBytes, _ := stub.GetState(loanApplicationId)
+	/*var key = args[0].UserId
+	var value = args[0].CreditScore
+
+	//loanApplicationId = args[0]
+	//creditScore = args[1]
+
+	loanAsBytes, _ := stub.GetState(key)
 	loanApplication := loanApplication{}
 
 	json.Unmarshal(loanAsBytes, &loanApplication)
-	loanApplication.CreditScore = creditScore
+	loanApplication.CreditScore = value
 
 	loanAsBytes, _ = json.Marshal(loanApplication)
-	stub.PutState(loanApplicationId, loanAsBytes)
+	stub.PutState(key, loanAsBytes)*/
 
-	return creditScore, nil
+	return args[0], nil
 }
 
 // Set stores the asset (both key and value) on the ledger. If the key exists,
