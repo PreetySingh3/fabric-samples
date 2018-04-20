@@ -39,6 +39,11 @@ type loanApplication struct {
 	CreditScore string `json:"CreditScore"`
 }
 
+type creditScoreStruct struct {
+	UserId      string `json:"UserId"`
+	CreditScore string `json:"CreditScore"`
+}
+
 // Init is called during chaincode instantiation to initialize any
 // data. Note that chaincode upgrade also calls this function to reset
 // or to migrate data.
@@ -110,6 +115,7 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	} else if fn == "queryLoanByBank" {
 		return t.queryLoanByBank(stub, args)
 	} else if fn == "setCreditScoreState" { // assume 'set' even if fn is nil
+
 		result, err = setCreditScoreState(stub, args)
 	} else {
 		result, err = updateLoanStatus(stub, args)
@@ -124,26 +130,40 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 
 // Set credit score of bank
 func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (string, error) {
-	//var loanApplicationId, creditScore string
+	//var key, value string
 	fmt.Println("testing.......................................", args)
 
-	for i := 0; i < len(args); i++ {
+	credit := creditScoreStruct{}
+	bytes1 := []byte(args[0])
+	json.Unmarshal(bytes1, &credit)
+	fmt.Printf("UserId........................", credit)
+	// String contains two JSON rows.
+	/*text := "[{\"UserId\": \"L001\", \"CreditScore\": \"Go\"}]"
+	// Get byte slice from string.
+	bytes := []byte(text)
+
+	// Unmarshal string into structs.
+	var credit []creditScoreStruct
+	json.Unmarshal(bytes, &credit)
+
+	for l := range credit {
+		fmt.Printf("Id = %v, Name = %v", credit[l].UserId, credit[l].CreditScore)
+		fmt.Println()
+	}*/
+
+	/*for i := 0; i < len(args); i++ {
 		fmt.Println("args[i] inside loop..............", args[i])
-	}
+		key = args[i].UserId
+		value = args[i].CreditScore
+	}*/
 
-	/*var key = args[0].UserId
-	var value = args[0].CreditScore
+	//loanAsBytes, _ := stub.GetState(key)
+	//loanApplication := loanApplication{}
 
-	//loanApplicationId = args[0]
-	//creditScore = args[1]
-
-	loanAsBytes, _ := stub.GetState(key)
-	loanApplication := loanApplication{}
-
-	json.Unmarshal(loanAsBytes, &loanApplication)
+	/*json.Unmarshal(bytes1, &credit)
 	loanApplication.CreditScore = value
 
-	loanAsBytes, _ = json.Marshal(loanApplication)
+	loanAsBytes, _ = json.Marshal(credit)
 	stub.PutState(key, loanAsBytes)*/
 
 	return args[0], nil
