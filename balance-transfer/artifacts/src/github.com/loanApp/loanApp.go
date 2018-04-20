@@ -134,9 +134,14 @@ func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (strin
 	fmt.Println("testing.......................................", args)
 
 	credit := creditScoreStruct{}
-	bytes1 := []byte(args[0])
-	err := json.Unmarshal(bytes1, &credit)
-	fmt.Println("err........................", err)
+	for l := range args {
+		bytes1 := []byte(args[l])
+		json.Unmarshal(bytes1, &credit)
+		fmt.Printf("Id = %v, Name = %v", credit.UserId, credit.CreditScore)
+		fmt.Println()
+	}
+
+	//fmt.Println("err........................", err)
 	fmt.Println("UserId........................", credit)
 	// String contains two JSON rows.
 	/*text := "[{\"UserId\": \"L001\", \"CreditScore\": \"Go\"}]"
