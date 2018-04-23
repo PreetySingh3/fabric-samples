@@ -161,7 +161,7 @@ func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (strin
 	}*/
 
 	//fmt.Println("err........................", err)
-	fmt.Println("UserId........................", credit)
+	//fmt.Println("UserId........................", credit)
 	// String contains two JSON rows.
 	/*text := "[{\"UserId\": \"L001\", \"CreditScore\": \"Go\"}]"
 	// Get byte slice from string.
