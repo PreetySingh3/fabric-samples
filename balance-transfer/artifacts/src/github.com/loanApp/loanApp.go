@@ -147,7 +147,7 @@ func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (strin
 	err := json.Unmarshal(bytes1, &cs)
 
 	for k, v := range cs.CreditScore {
-		fmt.Printf("key[%s] value[%s]\n", k, v)
+		fmt.Println("Object retrieved......................", k, v.CreditScore, v.UserId)
 	}
 
 	fmt.Println("errr................", err)
