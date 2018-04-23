@@ -137,8 +137,9 @@ func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (strin
 
 	//credit := creditScoreStruct{}
 	bytes1 := []byte(args[0])
+	fmt.Println("bytes1................", bytes1)
 	json.Unmarshal(bytes1, &credit)
-	fmt.Println("len(args)................", credit)
+	fmt.Println("credit................", credit)
 
 	/*for i := 0; i < len(args); i++ {
 		fmt.Println("for loop................", args[i])
