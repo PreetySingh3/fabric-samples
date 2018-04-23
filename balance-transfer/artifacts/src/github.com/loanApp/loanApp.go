@@ -39,12 +39,16 @@ type loanApplication struct {
 	CreditScore string `json:"CreditScore"`
 }
 
-/*type creditScoreStruct struct {
+type credit struct {
 	UserId      string `json:"UserId"`
 	CreditScore string `json:"CreditScore"`
-}*/
+}
 
-var credit map[string]interface{}
+type creditScoreStruct struct {
+	CreditScore []credit
+}
+
+//var credit map[string]interface{}
 
 // Init is called during chaincode instantiation to initialize any
 // data. Note that chaincode upgrade also calls this function to reset
@@ -138,13 +142,16 @@ func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (strin
 	//credit := creditScoreStruct{}
 	bytes1 := []byte(args[0])
 	fmt.Println("bytes1................", bytes1)
-	json.Unmarshal(bytes1, &credit)
+	//json.Unmarshal(bytes1, &credit)
+	var cs creditScoreStruct
+	err := json.Unmarshal(bytes1, &cs)
 
-	for k, v := range credit {
-		fmt.Printf("key[%s] value[%s]\n", k, v)
-	}
+	//	for k, v := range credit {
+	//		fmt.Printf("key[%s] value[%s]\n", k, v)
+	//	}
 
-	fmt.Println("credit................", credit)
+	fmt.Println("errr................", err)
+	fmt.Println("credit................", cs)
 
 	/*for i := 0; i < len(args); i++ {
 		fmt.Println("for loop................", args[i])
