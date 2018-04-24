@@ -145,6 +145,7 @@ func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (strin
 
 	for k, v := range cs.CreditScore {
 		fmt.Println("Object retrieved......................", k, v.CreditScore, v.LoanId)
+		fmt.Println("v.LoanId...........................", v.LoanId)
 		loanAsBytes, _ := stub.GetState(v.LoanId)
 		loanApplication := loanApplication{}
 
