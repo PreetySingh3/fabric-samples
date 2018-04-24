@@ -136,61 +136,21 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 
 // Set credit score of bank
 func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (string, error) {
-	//var key, value string
-	fmt.Println("testing.......................................", args)
-
-	//credit := creditScoreStruct{}
 	bytes1 := []byte(args[0])
 	fmt.Println("bytes1................", bytes1)
-	//json.Unmarshal(bytes1, &credit)
+
 	var cs creditScoreStruct
 	err := json.Unmarshal(bytes1, &cs)
 
 	for k, v := range cs.CreditScore {
 		fmt.Println("Object retrieved......................", k, v.CreditScore, v.UserId)
+		loanAsBytes, _ := json.Marshal(cs)
+		stub.PutState(v.UserId, loanAsBytes)
 	}
 
 	fmt.Println("errr................", err)
 	fmt.Println("credit................", cs)
 	fmt.Println("credit................", cs.CreditScore)
-
-	/*for i := 0; i < len(args); i++ {
-		fmt.Println("for loop................", args[i])
-
-		fmt.Printf("Id = %v, Name = %v", credit.UserId, credit.CreditScore)
-
-	}*/
-
-	//fmt.Println("err........................", err)
-	//fmt.Println("UserId........................", credit)
-	// String contains two JSON rows.
-	/*text := "[{\"UserId\": \"L001\", \"CreditScore\": \"Go\"}]"
-	// Get byte slice from string.
-	bytes := []byte(text)
-
-	// Unmarshal string into structs.
-	var credit []creditScoreStruct
-	json.Unmarshal(bytes, &credit)
-
-	for l := range credit {
-		fmt.Printf("Id = %v, Name = %v", credit[l].UserId, credit[l].CreditScore)
-		fmt.Println()
-	}*/
-
-	/*for i := 0; i < len(args); i++ {
-		fmt.Println("args[i] inside loop..............", args[i])
-		key = args[i].UserId
-		value = args[i].CreditScore
-	}*/
-
-	//loanAsBytes, _ := stub.GetState(key)
-	//loanApplication := loanApplication{}
-
-	/*json.Unmarshal(bytes1, &credit)
-	loanApplication.CreditScore = value
-
-	loanAsBytes, _ = json.Marshal(credit)
-	stub.PutState(key, loanAsBytes)*/
 
 	return args[0], nil
 }
