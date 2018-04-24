@@ -110,7 +110,8 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	// Extract the function and args from the transaction proposal
 	fn, args := stub.GetFunctionAndParameters()
-
+	fmt.Println("Args..............................", args)
+	fmt.Println("fn..............................", fn)
 	var result string
 	var err error
 	if fn == "createLoanRequest" {
@@ -136,16 +137,13 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 // Set credit score of bank
 func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	bytes1 := []byte(args[0])
+	fmt.Println("bytes1................", bytes1)
 
 	var cs creditScoreStruct
 	err := json.Unmarshal(bytes1, &cs)
-	if err != nil {
-		return "", fmt.Errorf("Failed to get CreditScore: %s with error: ", err)
-	}
 
 	for k, v := range cs.CreditScore {
 		fmt.Println("Object retrieved......................", k, v.CreditScore, v.LoanId)
-		fmt.Println("v.LoanId...........................", v.LoanId)
 		loanAsBytes, _ := stub.GetState(v.LoanId)
 		loanApplication := loanApplication{}
 
@@ -155,6 +153,8 @@ func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (strin
 		loanAsBytes, _ = json.Marshal(loanApplication)
 		stub.PutState(v.LoanId, loanAsBytes)
 	}
+
+	fmt.Println("errr................", err)
 
 	return args[0], nil
 }
