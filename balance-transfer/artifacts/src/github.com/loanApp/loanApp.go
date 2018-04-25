@@ -37,6 +37,7 @@ type loanApplication struct {
 	BankId      string `json:"BankId"`
 	Status      string `json:"Status"`
 	CreditScore string `json:"CreditScore"`
+	DealerId    string `json:"DealerId"`
 }
 
 type credit struct {
@@ -110,8 +111,7 @@ func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	// Extract the function and args from the transaction proposal
 	fn, args := stub.GetFunctionAndParameters()
-	fmt.Println("Args..............................", args)
-	fmt.Println("fn..............................", fn)
+
 	var result string
 	var err error
 	if fn == "createLoanRequest" {
@@ -137,10 +137,10 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 // Set credit score of bank
 func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	bytes1 := []byte(args[0])
-	fmt.Println("bytes1................", bytes1)
 
 	var cs creditScoreStruct
 	err := json.Unmarshal(bytes1, &cs)
+	fmt.Errorf("Error while unmarshalling......................", err)
 
 	for k, v := range cs.CreditScore {
 		fmt.Println("Object retrieved......................", k, v.CreditScore, v.LoanId)
@@ -154,10 +154,6 @@ func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (strin
 		stub.PutState(v.LoanId, loanAsBytes)
 	}
 
-	fmt.Println("errr................", err)
-	fmt.Println("credit................", cs)
-	fmt.Println("credit................", cs.CreditScore)
-
 	return args[0], nil
 }
 
@@ -165,7 +161,7 @@ func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (strin
 // it will override the value with the new one
 func createLoanRequest(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
-	if len(args) != 11 {
+	if len(args) != 12 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
 	}
 
@@ -178,7 +174,7 @@ func createLoanRequest(stub shim.ChaincodeStubInterface, args []string) (string,
 		return "", fmt.Errorf("Applicant not eligible for loan due to age restrictions.")
 	}
 
-	loanApplication := &loanApplication{args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10]}
+	loanApplication := &loanApplication{args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11]}
 	LoanJSONasBytes, err := json.Marshal(loanApplication)
 	if err != nil {
 		return "", fmt.Errorf("Failed to Marshal asset: %s", args[0])
