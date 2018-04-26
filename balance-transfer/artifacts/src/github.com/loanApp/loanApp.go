@@ -42,6 +42,7 @@ type loanApplication struct {
 
 type credit struct {
 	LoanId      string `json:"LoanId"`
+	SSN         string `json:"SSN"`
 	CreditScore string `json:"CreditScore"`
 }
 
@@ -143,15 +144,15 @@ func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (strin
 	fmt.Errorf("Error while unmarshalling......................", err)
 
 	for k, v := range cs.CreditScore {
-		fmt.Println("Object retrieved......................", k, v.CreditScore, v.LoanId)
-		loanAsBytes, _ := stub.GetState(v.LoanId)
+		fmt.Println("Object retrieved......................", k, v.CreditScore, v.SSN)
+		loanAsBytes, _ := stub.GetState(v.SSN)
 		loanApplication := loanApplication{}
 
 		json.Unmarshal(loanAsBytes, &loanApplication)
 		loanApplication.CreditScore = v.CreditScore
 
 		loanAsBytes, _ = json.Marshal(loanApplication)
-		stub.PutState(v.LoanId, loanAsBytes)
+		stub.PutState(v.SSN, loanAsBytes)
 	}
 
 	return args[0], nil
