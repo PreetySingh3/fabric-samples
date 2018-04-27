@@ -150,15 +150,16 @@ func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (strin
 
 		queryString := fmt.Sprintf("{\"selector\": {\"SSN\": {\"$eq\": \"%s\" }}}", SSN)
 
-		queryResults, err := stub.GetQueryResult(queryString)
+		queryResults, err := getQueryResultForQueryString(stub, queryString)
 		if err != nil {
 			return "", fmt.Errorf("Error occurred: %s", err)
 		}
-
-		fmt.Println("queryResults.......................", queryResults)
-
-		/*loanAsBytes, _ := stub.GetState(queryResults.Record.LoanId)
 		loanApplication := loanApplication{}
+		json.Unmarshal(queryResults, &loanApplication)
+		fmt.Println("queryResults.......................", loanApplication)
+
+		/*loanAsBytes, _ := stub.GetState(queryResults[0].Record.LoanId)
+		// loanApplication := loanApplication{}
 
 		json.Unmarshal(loanAsBytes, &loanApplication)
 		loanApplication.CreditScore = v.CreditScore
