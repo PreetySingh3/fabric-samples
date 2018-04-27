@@ -154,9 +154,10 @@ func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (strin
 		if err != nil {
 			return "", fmt.Errorf("Error occurred: %s", err)
 		}
-		loanApplication := loanApplication{}
-		json.Unmarshal(queryResults, &loanApplication)
-		fmt.Println("queryResults.......................", loanApplication)
+		var credit map[string]interface{}
+		//loanApplication := loanApplication{}
+		json.Unmarshal(queryResults, &credit)
+		fmt.Println("queryResults.......................", credit)
 
 		/*loanAsBytes, _ := stub.GetState(queryResults[0].Record.LoanId)
 		// loanApplication := loanApplication{}
