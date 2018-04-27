@@ -144,27 +144,27 @@ func setCreditScoreState(stub shim.ChaincodeStubInterface, args []string) (strin
 	fmt.Errorf("Error while unmarshalling......................", err)
 
 	for k, v := range cs.CreditScore {
-		fmt.Println("Object retrieved......................", k, v.CreditScore, v.LoanId)
+		fmt.Println("Object retrieved......................", k, v.CreditScore, v.SSN)
 
 		SSN := v.SSN
 
 		queryString := fmt.Sprintf("{\"selector\": {\"SSN\": {\"$eq\": \"%s\" }}}", SSN)
 
-		queryResults, err := getQueryResultForQueryString(stub, queryString)
+		queryResults, err := stub.GetQueryResult(queryString)
 		if err != nil {
 			return "", fmt.Errorf("Error occurred: %s", err)
 		}
 
 		fmt.Println("queryResults.......................", queryResults)
 
-		loanAsBytes, _ := stub.GetState(v.LoanId)
+		/*loanAsBytes, _ := stub.GetState(queryResults.Record.LoanId)
 		loanApplication := loanApplication{}
 
 		json.Unmarshal(loanAsBytes, &loanApplication)
 		loanApplication.CreditScore = v.CreditScore
 
 		loanAsBytes, _ = json.Marshal(loanApplication)
-		stub.PutState(v.LoanId, loanAsBytes)
+		stub.PutState(queryResults[0].Record.LoanId, loanAsBytes)*/
 	}
 
 	return args[0], nil
